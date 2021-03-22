@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="120dp"
+        android:layout_height="80dp"
+        android:layout_margin="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+    <View
+        android:id="@+id/plashka_view"
+        android:layout_width="120dp"
+        android:layout_height="20dp"
+        app:layout_constraintLeft_toLeftOf="@id/icon"
+        app:layout_constraintBottom_toBottomOf="@id/icon"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/white"
+        android:background="#81000000"
+        />
+    <TextView
+        android:id="@+id/plashka_tv"
+        android:layout_width="50sp"
+        android:layout_height="18sp"
+        android:textColor="@color/white"
+        android:text="Playlist"
+        android:textStyle="italic"
+        app:layout_constraintLeft_toLeftOf="@id/plashka_view"
+        app:layout_constraintRight_toRightOf="@id/icon"
+        app:layout_constraintBottom_toBottomOf="@id/plashka_view"
+        android:layout_marginBottom="5dp"
+        />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/fjalla_one"
+        android:layout_marginLeft="8dp"
+        android:textSize="16dp"
+        android:text="Title"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/icon"
+        app:layout_constraintLeft_toRightOf="@id/icon"
+        app:layout_constraintTop_toTopOf="@+id/icon" />
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="8dp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/noto_sans"
+        android:text="32 video series"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/icon"
+        app:layout_constraintLeft_toRightOf="@id/icon"
+        app:layout_constraintTop_toTopOf="@+id/title" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
