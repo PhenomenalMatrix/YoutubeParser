@@ -37,7 +37,6 @@ class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), P
         initAdapter()
         setupObservers(id)
         workWithToolBar()
-
     }
 
     private fun workWithToolBar() {
@@ -88,5 +87,6 @@ class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), P
         float_btn.setOnClickListener {
             startActivity(intent)
         }
+
     }
 }
