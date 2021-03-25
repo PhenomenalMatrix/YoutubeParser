@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.youtubeparser.R
 import com.example.youtubeparser.base.BaseActivity
+import com.example.youtubeparser.models.Info
 import com.example.youtubeparser.ui.adapters.PlayItemsListAdapter
 import com.example.youtubeparser.ui.adapters.PlayItemsListViewModel
 import com.example.youtubeparser.ui.adapters.PlayListAdapter
@@ -28,7 +29,7 @@ class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), P
     private val viewModel: PlayItemsListViewModel by viewModels()
     private val layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
     private lateinit var  alertDialogBuilder: AlertDialog
-
+    private var list : MutableList<Info> = mutableListOf()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +38,13 @@ class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), P
         initAdapter()
         setupObservers(id)
         workWithToolBar()
+        float_btn.setOnClickListener {
+            val intent = Intent(this,VideoDetailsActivity::class.java)
+            intent.putExtra("ID",list.first().contentDetails?.videoId)
+            intent.putExtra("TIT", list.first().snippet.title)
+            intent.putExtra("DES",list.first().snippet.description)
+            startActivity(intent)
+        }
     }
 
     private fun workWithToolBar() {
@@ -54,7 +62,9 @@ class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), P
     private fun setupObservers(id: String?) {
         if (id != null) {
             viewModel.fetchPlayItems(id)?.observe(this, Observer {
+                list = it.items
                 adapter.addItems(it.items)
+
             })
         }
     }
@@ -84,9 +94,7 @@ class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), P
         intent.putExtra("TIT", title)
         intent.putExtra("DES",desc)
         startActivity(intent)
-        float_btn.setOnClickListener {
-            startActivity(intent)
-        }
+
 
     }
 }
