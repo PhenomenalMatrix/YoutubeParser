@@ -12,7 +12,9 @@ import com.example.youtubeparser.models.Info
 import com.example.youtubeparser.ui.activity.PlayListActivity
 import kotlinx.android.synthetic.main.item_playlist.view.*
 
-class PlayListAdapter(var listener: Listener) : RecyclerView.Adapter<BaseViewHolder>() {
+class PlayListAdapter(
+    val onItemClick: (Info) -> Unit
+) : RecyclerView.Adapter<BaseViewHolder>() {
 
     var list = mutableListOf<Info>()
 
@@ -32,23 +34,20 @@ class PlayListAdapter(var listener: Listener) : RecyclerView.Adapter<BaseViewHol
 
     override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
         holder.onBind(position)
+
+        holder.itemView.setOnClickListener {
+            onItemClick(list[position])
+        }
     }
 
     inner class PlayListViewHolder(itemView: View) : BaseViewHolder(itemView) {
+
         override fun onBind(position: Int) {
             itemView.apply {
                 title.text = list[position].snippet.title
                 subtitle.text = list[position].snippet.description
                 list[position].snippet.thumbnails?.medium?.url?.let { icon.loadImage(it) }
-                this.setOnClickListener{
-                    listener.onItemClickListener(list[position])
-                }
             }
         }
-
-    }
-
-    interface Listener{
-        fun onItemClickListener(item: Info)
     }
 }

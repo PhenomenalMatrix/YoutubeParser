@@ -1,5 +1,6 @@
 package com.example.youtubeparser.models
 
+import java.io.Serializable
 import java.util.*
 
 
@@ -8,8 +9,14 @@ data class VideoInfo2(val items2: MutableList<InfoItems>)
 
 data class Info(
         var id: String?=null,
-        var snippet: Snippet
-)
+        var snippet: Snippet,
+        var contentDetails: ContentDetails?=null
+):Serializable
+
+data class  ContentDetails(
+        var itemCount:Int?=null,
+        var videoId:String?=null
+):Serializable
 
 data class Snippet(
         var channelId: String?=null,

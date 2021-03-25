@@ -13,18 +13,19 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.youtubeparser.R
+import com.example.youtubeparser.base.BaseActivity
 import com.example.youtubeparser.extensions.showToastLong
 import com.example.youtubeparser.models.Info
 import com.example.youtubeparser.ui.adapters.PlayListAdapter
 import com.example.youtubeparser.ui.adapters.PlayListViewModel
 import kotlinx.android.synthetic.main.activity_playlist.*
 
-class PlayListActivity : AppCompatActivity(),PlayListAdapter.Listener {
+class PlayListActivity : BaseActivity(R.layout.activity_playlist) {
 
-    private lateinit var adapter: PlayListAdapter
+    private val adapter = PlayListAdapter(::clickItem)
     private val viewModel: PlayListViewModel by viewModels()
     private val layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-    private lateinit var  alertDialogBuilder: AlertDialog
+    private lateinit var alertDialogBuilder: AlertDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,23 +35,32 @@ class PlayListActivity : AppCompatActivity(),PlayListAdapter.Listener {
         listLoadCheker()
     }
 
-    private fun setupObservers() {
-            viewModel.fetchPlaylist()?.observe(this, Observer {
-                adapter.addItems(it.items)
-            })
+    //annonim function
+    private fun clickItem(item: Info) {
+        var intent = Intent(this, PlayItemsListActivity::class.java)
+        intent.putExtra("ID", item.id)
+        intent.putExtra("TITLE", item.snippet.title)
+        intent.putExtra("DESC", item.snippet.description)
+        startActivity(intent)
     }
 
-    private fun listLoadCheker(){
-        if(isNetworkAvailable()){
+    private fun setupObservers() {
+        viewModel.fetchPlaylist()?.observe(this, Observer {
+            adapter.addItems(it.items)
+        })
+    }
+
+    private fun listLoadCheker() {
+        if (isNetworkAvailable()) {
             setupObservers()
-        }else{
+        } else {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Network connection error")
             builder.setMessage("Try again")
             builder.setPositiveButton("refresh") { dialog, which ->
                 if (isNetworkAvailable()) {
                     setupObservers()
-                }else{
+                } else {
                     listLoadCheker()
                 }
             }
@@ -59,7 +69,6 @@ class PlayListActivity : AppCompatActivity(),PlayListAdapter.Listener {
     }
 
     fun initAdapter() {
-        adapter = PlayListAdapter(this)
         rv_playlist.adapter = adapter
         layoutManager.orientation = RecyclerView.VERTICAL
         rv_playlist.layoutManager = layoutManager
@@ -67,7 +76,7 @@ class PlayListActivity : AppCompatActivity(),PlayListAdapter.Listener {
         rv_playlist.adapter = adapter
         rv_playlist.isNestedScrollingEnabled = true
         val intent = Intent(this, PlayItemsListActivity::class.java)
-        rv_playlist.setOnClickListener{
+        rv_playlist.setOnClickListener {
             startActivity(intent)
         }
     }
@@ -77,13 +86,5 @@ class PlayListActivity : AppCompatActivity(),PlayListAdapter.Listener {
             getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
-    }
-
-    override fun onItemClickListener(item: Info) {
-        var intent = Intent(this, PlayItemsListActivity::class.java)
-        intent.putExtra("ID",item.id)
-        intent.putExtra("TITLE",item.snippet.title)
-        intent.putExtra("DESC",item.snippet.description)
-        startActivity(intent)
     }
 }

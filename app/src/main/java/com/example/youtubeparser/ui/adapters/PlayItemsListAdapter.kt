@@ -11,7 +11,7 @@ import com.example.youtubeparser.models.InfoItems
 import kotlinx.android.synthetic.main.activity_play_items_list.view.*
 import kotlinx.android.synthetic.main.item_playlist.view.*
 
-class PlayItemsListAdapter: RecyclerView.Adapter<BaseViewHolder>(){
+class PlayItemsListAdapter(var listener: Listener): RecyclerView.Adapter<BaseViewHolder>(){
 
     var list = mutableListOf<Info>()
 
@@ -42,11 +42,19 @@ class PlayItemsListAdapter: RecyclerView.Adapter<BaseViewHolder>(){
                 plashka_tv.isVisible = false
                 title.text = list[position].snippet.title
                 subtitle.text = list[position].snippet.publishedAt.toString()
-                list[position].snippet.thumbnails?.medium?.url?.let { icon.loadImage(it) }
+                list[position].snippet.thumbnails?.medium?.url?.let { icon.loadImage(it)
+                setOnClickListener {
+                 listener.onItemClicked(list[position].contentDetails?.videoId?:"", list[position].snippet.title?:"",list[position].snippet.description?:"")
+                }
+                }
             }
 
         }
 
+    }
+
+    interface Listener{
+        fun onItemClicked(id: String, title: String, desc: String)
     }
 
 }
