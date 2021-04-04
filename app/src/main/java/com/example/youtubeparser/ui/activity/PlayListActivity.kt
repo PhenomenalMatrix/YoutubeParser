@@ -5,20 +5,25 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.youtubeparser.R
 import com.example.youtubeparser.base.BaseActivity
+import com.example.youtubeparser.data.network.Resource
+import com.example.youtubeparser.data.network.Status
 import com.example.youtubeparser.extensions.showToastLong
 import com.example.youtubeparser.models.Info
 import com.example.youtubeparser.ui.adapters.PlayListAdapter
 import com.example.youtubeparser.ui.adapters.PlayListViewModel
 import kotlinx.android.synthetic.main.activity_playlist.*
+import kotlinx.coroutines.launch
 
 class PlayListActivity : BaseActivity(R.layout.activity_playlist) {
 
@@ -45,9 +50,22 @@ class PlayListActivity : BaseActivity(R.layout.activity_playlist) {
     }
 
     private fun setupObservers() {
-        viewModel.fetchPlaylist()?.observe(this, Observer {
-            adapter.addItems(it.items)
-        })
+        lifecycleScope.launch {
+            viewModel.fetchPlaylist()?.observe(this@PlayListActivity, Observer {
+                when(it.status) {
+                    Status.SUCCESS ->{
+                        adapter.addItems(it.data?.items!!)
+                    }
+                    Status.LOADING -> {
+                        Log.e("TAG", "setupObservers: ")
+                    }
+                    Status.ERROR -> {
+                        Log.e("TAG", "setupObservers: ")
+                    }
+                }
+
+            })
+        }
     }
 
     private fun listLoadCheker() {
