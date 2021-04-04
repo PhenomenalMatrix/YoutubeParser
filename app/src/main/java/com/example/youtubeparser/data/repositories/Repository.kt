@@ -29,22 +29,20 @@ class Repository(
         return data
     }
 
-    fun fetchVideo(
+   suspend fun fetchVideo(
         part: String,
         pageToken: String,
         playlistId: String,
         key: String
-    ): MutableLiveData<VideoInfo>{
-        val data: MutableLiveData<VideoInfo> = MutableLiveData()
-        playlistApi.getItemListFormApi(part, pageToken, playlistId, key,150).enqueue(object : Callback<VideoInfo>{
-            override fun onFailure(call: Call<VideoInfo>, t: Throwable) {
-                data.value = null
-            }
-
-            override fun onResponse(call: Call<VideoInfo>, response: Response<VideoInfo>) {
-                data.value = response.body()
-            }
-        })
+    ): MutableLiveData<Resource<VideoInfo>>{
+        val data: MutableLiveData<Resource<VideoInfo>> = MutableLiveData()
+        data.postValue(Resource.loading(null))
+        val response = playlistApi.getItemListFormApi(part, pageToken, playlistId, key,150)
+        if(response.isSuccessful){
+            data.postValue(Resource.success(response.body()!!))
+        }else{
+            data.postValue(Resource.error(null,response.errorBody().toString()))
+        }
         return data
     }
 }

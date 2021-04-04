@@ -17,11 +17,11 @@ interface PlaylistApi {
     ): Response<VideoInfo>
 
     @GET("youtube/v3/playlistItems")
-    fun getItemListFormApi(
+    suspend fun getItemListFormApi(
         @Query("part") part: String,
         @Query("pageToken") pageToken: String,
         @Query("playlistId") playlistId: String,
         @Query("key") key: String,
         @Query("maxResults") maxResult: Int
-    ): Call<VideoInfo>
+    ): Response<VideoInfo>
 }

@@ -5,15 +5,18 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.youtubeparser.R
 import com.example.youtubeparser.base.BaseActivity
+import com.example.youtubeparser.data.network.Status
 import com.example.youtubeparser.models.Info
 import com.example.youtubeparser.ui.adapters.PlayItemsListAdapter
 import com.example.youtubeparser.ui.adapters.PlayItemsListViewModel
@@ -22,6 +25,7 @@ import com.example.youtubeparser.ui.adapters.PlayListViewModel
 import com.example.youtubeparser.video_details.VideoDetailsActivity
 import kotlinx.android.synthetic.main.activity_play_items_list.*
 import kotlinx.android.synthetic.main.activity_playlist.*
+import kotlinx.coroutines.launch
 
 class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), PlayItemsListAdapter.Listener {
 
@@ -60,13 +64,24 @@ class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), P
 
 
     private fun setupObservers(id: String?) {
-        if (id != null) {
-            viewModel.fetchPlayItems(id)?.observe(this, Observer {
-                list = it.items
-                adapter.addItems(it.items)
-
-            })
+        lifecycleScope.launch {
+            if (id != null) {
+                viewModel.fetchPlayItems(id)?.observe(this@PlayItemsListActivity, Observer {
+                    when(it.status) {
+                        Status.SUCCESS -> {
+                            adapter.addItems(it.data?.items!!)
+                        }
+                        Status.LOADING -> {
+                            Log.e("TAG", "setupObservers: ")
+                        }
+                        Status.ERROR -> {
+                            Log.e("TAG", "setupObservers: ")
+                        }
+                    }
+                })
+            }
         }
+
     }
 
 
