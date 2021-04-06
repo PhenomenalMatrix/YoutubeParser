@@ -22,9 +22,9 @@ class VideoDetailsActivity : YouTubeBaseActivity(),YouTubePlayer.OnInitializedLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_details)
-        videoId = intent.getStringExtra("ID") ?: ""
-        videoTitle = intent.getStringExtra("TIT") ?:""
-        videoDesc = intent.getStringExtra("DES") ?:""
+        videoId = intent.getStringExtra("IDV") ?: ""
+        videoTitle = intent.getStringExtra("TITL") ?:""
+        videoDesc = intent.getStringExtra("DESC") ?:""
         setupViews()
     }
 

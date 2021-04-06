@@ -3,10 +3,8 @@ package com.example.youtubeparser.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
@@ -20,11 +18,8 @@ import com.example.youtubeparser.data.network.Status
 import com.example.youtubeparser.models.Info
 import com.example.youtubeparser.ui.adapters.PlayItemsListAdapter
 import com.example.youtubeparser.ui.adapters.PlayItemsListViewModel
-import com.example.youtubeparser.ui.adapters.PlayListAdapter
-import com.example.youtubeparser.ui.adapters.PlayListViewModel
 import com.example.youtubeparser.video_details.VideoDetailsActivity
 import kotlinx.android.synthetic.main.activity_play_items_list.*
-import kotlinx.android.synthetic.main.activity_playlist.*
 import kotlinx.coroutines.launch
 
 class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), PlayItemsListAdapter.Listener {
@@ -44,9 +39,9 @@ class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), P
         workWithToolBar()
         float_btn.setOnClickListener {
             val intent = Intent(this,VideoDetailsActivity::class.java)
-            intent.putExtra("ID",list.first().contentDetails?.videoId)
-            intent.putExtra("TIT", list.first().snippet.title)
-            intent.putExtra("DES",list.first().snippet.description)
+            intent.putExtra("IDV",list.first().contentDetails?.videoId)
+            intent.putExtra("TITL", list.first().snippet.title)
+            intent.putExtra("DESC",list.first().snippet.description)
             startActivity(intent)
         }
     }
@@ -70,6 +65,7 @@ class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), P
                     when(it.status) {
                         Status.SUCCESS -> {
                             adapter.addItems(it.data?.items!!)
+                            list.addAll(it.data?.items!!)
                         }
                         Status.LOADING -> {
                             Log.e("TAG", "setupObservers: ")

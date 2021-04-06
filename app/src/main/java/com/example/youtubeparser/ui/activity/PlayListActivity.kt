@@ -3,12 +3,10 @@ package com.example.youtubeparser.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -16,9 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.youtubeparser.R
 import com.example.youtubeparser.base.BaseActivity
-import com.example.youtubeparser.data.network.Resource
 import com.example.youtubeparser.data.network.Status
-import com.example.youtubeparser.extensions.showToastLong
 import com.example.youtubeparser.models.Info
 import com.example.youtubeparser.ui.adapters.PlayListAdapter
 import com.example.youtubeparser.ui.adapters.PlayListViewModel
@@ -37,6 +33,7 @@ class PlayListActivity : BaseActivity(R.layout.activity_playlist) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playlist)
         initAdapter()
+        setRecyclerViewScrollListener()
         listLoadCheker()
     }
 
@@ -98,6 +95,22 @@ class PlayListActivity : BaseActivity(R.layout.activity_playlist) {
             startActivity(intent)
         }
     }
+
+    private fun setRecyclerViewScrollListener() {
+        rv_playlist.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                val layoutManager = rv_playlist.getLayoutManager() as LinearLayoutManager
+                val pos = layoutManager.findLastCompletelyVisibleItemPosition()
+                val numItems: Int = rv_playlist.getAdapter()!!.getItemCount()
+                if (pos+1 == numItems) {
+                    Log.e("TAG", "onScrollStateChanged: " + pos)
+                }
+            }
+        })
+    }
+
+
 
     private fun isNetworkAvailable(): Boolean {
         val connectivityManager =
