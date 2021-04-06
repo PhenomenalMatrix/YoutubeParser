@@ -9,7 +9,7 @@ import com.example.youtubeparser.models.VideoInfo
 
 
  class PlayItemsListViewModel : BaseViewModel() {
-    suspend fun fetchPlayItems(id: String): MutableLiveData<Resource<VideoInfo>>?{
-        return App.repository.fetchVideo("snippet,contentDetails","",id,"AIzaSyCzVOrBBiXeVbjWoE4J_kiOwxj57LI90nA")
+    suspend fun fetchPlayItems(id: String, pageToken: String): MutableLiveData<Resource<VideoInfo>>?{
+        return App.repository.fetchVideo("snippet,contentDetails",pageToken,id,"AIzaSyCzVOrBBiXeVbjWoE4J_kiOwxj57LI90nA")
     }
 }

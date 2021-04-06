@@ -4,8 +4,11 @@ import java.io.Serializable
 import java.util.*
 
 
-data class VideoInfo(val items: MutableList<Info>)
-data class VideoInfo2(val items2: MutableList<InfoItems>)
+data class VideoInfo(
+        var nextPageToken: String?=null,
+        val items: MutableList<Info>
+)
+
 
 data class Info(
         var id: String?=null,
@@ -37,23 +40,4 @@ data class Medium(
         var height: String?=null
 )
 
-data class InfoItems(
-        var id: String?=null,
-        var snippetItems: SnippetItems
-)
 
-data class SnippetItems(
-        var chanelId: String?=null,
-        var title: String?=null,
-        var thumbnailsItems: ThumbnailsItems?=null
-)
-
-data class ThumbnailsItems(
-        var mediumItems: MediumItems?=null
-)
-
-data class MediumItems(
-        var url: String?=null,
-        var width: String?=null,
-        var height: String?=null
-)

@@ -16,11 +16,11 @@ class Repository(
         part: String,
         channelID: String,
         key: String,
-        maxValue: Int = 50
+        pageToken: String
     ): MutableLiveData<Resource<VideoInfo>>? {
         val data: MutableLiveData<Resource<VideoInfo>> = MutableLiveData()
         data.postValue(Resource.loading(null))
-        val response = playlistApi.getListFromApi(part, channelID, key,maxValue)
+        val response = playlistApi.getListFromApi(part, channelID, key,pageToken)
         if (response.isSuccessful){
             data.postValue(Resource.success(response.body()!!))
         }else{
@@ -37,7 +37,7 @@ class Repository(
     ): MutableLiveData<Resource<VideoInfo>>{
         val data: MutableLiveData<Resource<VideoInfo>> = MutableLiveData()
         data.postValue(Resource.loading(null))
-        val response = playlistApi.getItemListFormApi(part, pageToken, playlistId, key,150)
+        val response = playlistApi.getItemListFormApi(part, pageToken, playlistId, key)
         if(response.isSuccessful){
             data.postValue(Resource.success(response.body()!!))
         }else{

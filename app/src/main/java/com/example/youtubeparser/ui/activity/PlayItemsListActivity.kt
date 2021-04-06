@@ -20,6 +20,7 @@ import com.example.youtubeparser.ui.adapters.PlayItemsListAdapter
 import com.example.youtubeparser.ui.adapters.PlayItemsListViewModel
 import com.example.youtubeparser.video_details.VideoDetailsActivity
 import kotlinx.android.synthetic.main.activity_play_items_list.*
+import kotlinx.android.synthetic.main.activity_playlist.*
 import kotlinx.coroutines.launch
 
 class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), PlayItemsListAdapter.Listener {
@@ -29,11 +30,14 @@ class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), P
     private val layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
     private lateinit var  alertDialogBuilder: AlertDialog
     private var list : MutableList<Info> = mutableListOf()
+    private lateinit var id: String
+    private var nextPageToken = ""
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var id: String? = intent.getStringExtra("ID")
+        id = intent.getStringExtra("ID").toString()
         initAdapter()
         setupObservers(id)
         workWithToolBar()
@@ -44,6 +48,8 @@ class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), P
             intent.putExtra("DESC",list.first().snippet.description)
             startActivity(intent)
         }
+        setRecyclerViewScrollListener()
+
     }
 
     private fun workWithToolBar() {
@@ -61,10 +67,11 @@ class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), P
     private fun setupObservers(id: String?) {
         lifecycleScope.launch {
             if (id != null) {
-                viewModel.fetchPlayItems(id)?.observe(this@PlayItemsListActivity, Observer {
+                viewModel.fetchPlayItems(id,nextPageToken)?.observe(this@PlayItemsListActivity, Observer {
                     when(it.status) {
                         Status.SUCCESS -> {
                             adapter.addItems(it.data?.items!!)
+                            nextPageToken = it.data.nextPageToken.toString()
                             list.addAll(it.data?.items!!)
                         }
                         Status.LOADING -> {
@@ -89,6 +96,21 @@ class PlayItemsListActivity : BaseActivity(R.layout.activity_play_items_list), P
         rv_playitemlist.itemAnimator = DefaultItemAnimator()
         rv_playitemlist.adapter = adapter
         rv_playitemlist.isNestedScrollingEnabled = true
+    }
+
+    private fun setRecyclerViewScrollListener() {
+        rv_playitemlist.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                val layoutManager = rv_playitemlist.getLayoutManager() as LinearLayoutManager
+                val pos = layoutManager.findLastCompletelyVisibleItemPosition()
+                val numItems: Int = rv_playitemlist.getAdapter()!!.getItemCount()
+                if (pos+1 == numItems) {
+                    setupObservers(id)
+                    Log.e("TAG", "onScrollStateChanged: " + pos)
+                }
+            }
+        })
     }
 
     private fun isNetworkAvailable(): Boolean {

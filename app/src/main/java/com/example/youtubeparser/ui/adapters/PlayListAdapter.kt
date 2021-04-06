@@ -25,7 +25,6 @@ class PlayListAdapter(
     }
 
     fun addItems(list: MutableList<Info>) {
-        this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()
     }

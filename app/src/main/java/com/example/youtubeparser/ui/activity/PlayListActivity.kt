@@ -5,8 +5,10 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -27,6 +29,7 @@ class PlayListActivity : BaseActivity(R.layout.activity_playlist) {
     private val viewModel: PlayListViewModel by viewModels()
     private val layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
     private lateinit var alertDialogBuilder: AlertDialog
+    private var pageToken = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,10 +51,12 @@ class PlayListActivity : BaseActivity(R.layout.activity_playlist) {
 
     private fun setupObservers() {
         lifecycleScope.launch {
-            viewModel.fetchPlaylist()?.observe(this@PlayListActivity, Observer {
+            viewModel.fetchPlaylist(pageToken)?.observe(this@PlayListActivity, Observer {
                 when(it.status) {
                     Status.SUCCESS ->{
                         adapter.addItems(it.data?.items!!)
+                        pageToken = it.data.nextPageToken.toString()
+                        Log.e("TAG", "pageToken: "+ pageToken )
                     }
                     Status.LOADING -> {
                         Log.e("TAG", "setupObservers: ")
@@ -104,6 +109,7 @@ class PlayListActivity : BaseActivity(R.layout.activity_playlist) {
                 val pos = layoutManager.findLastCompletelyVisibleItemPosition()
                 val numItems: Int = rv_playlist.getAdapter()!!.getItemCount()
                 if (pos+1 == numItems) {
+                    setupObservers()
                     Log.e("TAG", "onScrollStateChanged: " + pos)
                 }
             }

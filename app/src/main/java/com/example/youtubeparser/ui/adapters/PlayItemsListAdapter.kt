@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.youtubeparser.R
 import com.example.youtubeparser.extensions.loadImage
 import com.example.youtubeparser.models.Info
-import com.example.youtubeparser.models.InfoItems
-import kotlinx.android.synthetic.main.activity_play_items_list.view.*
 import kotlinx.android.synthetic.main.item_playlist.view.*
 
 class PlayItemsListAdapter(var listener: Listener): RecyclerView.Adapter<BaseViewHolder>(){
@@ -22,7 +20,6 @@ class PlayItemsListAdapter(var listener: Listener): RecyclerView.Adapter<BaseVie
     }
 
     fun addItems(list: MutableList<Info>) {
-        this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()
     }

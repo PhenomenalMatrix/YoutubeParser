@@ -13,8 +13,8 @@ import kotlinx.coroutines.launch
 class PlayListViewModel : BaseViewModel() {
 
 
-    suspend fun fetchPlaylist() : MutableLiveData<Resource<VideoInfo>>? {
-        return  App.repository.fetchPlaylist("snippet,contentDetails", "UC2Ru64PHqW4FxoP0xhQRvJg" ,"AIzaSyCzVOrBBiXeVbjWoE4J_kiOwxj57LI90nA")
+    suspend fun fetchPlaylist(pageToken: String) : MutableLiveData<Resource<VideoInfo>>? {
+        return  App.repository.fetchPlaylist("snippet,contentDetails", "UC2Ru64PHqW4FxoP0xhQRvJg" ,"AIzaSyCzVOrBBiXeVbjWoE4J_kiOwxj57LI90nA",pageToken)
     }
 
 }
